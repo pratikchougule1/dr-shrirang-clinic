@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dr. Shrirang Yadwadkar | Consultant General, Laparoscopic & Laser Surgeon, Specialist in Hernia & Robotic Surgery </title>
+  <title>Dr. Shrirang Yadwadkar | Consultant General, Laparoscopic & Laser Surgeon, Specialist in Hernia & Robotic Surgery</title>
   
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -46,7 +46,6 @@
   </script>
 
   <style>
-    /* Smooth custom scrollbar and subtle medical background pattern */
     body {
       background-color: #f1f5f9;
       background-image: radial-gradient(#cbd5e1 0.85px, transparent 0.85px);
@@ -54,30 +53,15 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    .no-scrollbar::-webkit-scrollbar {
-      display: none;
-    }
-    .no-scrollbar {
-      -ms-overflow-style: none;
-      scrollbar-width: none;
-    }
-
     @keyframes fadeSlideUp {
-      from {
-        opacity: 0;
-        transform: translateY(10px);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
     .animate-fade-up {
-      animation: fadeSlideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      animation: fadeSlideUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* QR Code container alignment */
     #qrcode-container img, #qrcode-container canvas {
       margin: 0 auto;
       border-radius: 0.75rem;
@@ -94,21 +78,26 @@
     
     <!-- Top Floating Utility Header -->
     <div class="absolute top-3 left-3 right-3 z-20 flex items-center justify-between">
-      <button onclick="openQRModal()" class="bg-white/90 hover:bg-white backdrop-blur-md text-medical-900 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-white/50 flex items-center gap-1.5 transition active:scale-95">
+      <button type="button" onclick="openQRModal()" class="bg-white/90 hover:bg-white backdrop-blur-md text-medical-900 px-3 py-1.5 rounded-full text-xs font-semibold shadow-sm border border-white/50 flex items-center gap-1.5 transition active:scale-95">
         <i class="fa-solid fa-qrcode text-medical-600"></i>
         <span>Clinic QR</span>
+      </button>
+
+      <!-- Subtle Admin Toggle (Discreet icon for doctor/staff; full button appears when active or via ?edit=1) -->
+      <button type="button" id="edit-toggle-btn" onclick="toggleEditMode()" title="Customize Profile & Upload Photos" class="bg-slate-900/50 hover:bg-slate-900/90 backdrop-blur-md text-white px-2.5 py-1.5 rounded-full text-xs font-semibold shadow-sm flex items-center gap-1.5 transition active:scale-95">
+        <i class="fa-solid fa-sliders text-teal-200"></i>
+        <span id="edit-btn-label" class="hidden">Done</span>
       </button>
     </div>
 
     <!-- HERO & PROFILE HEADER -->
     <header class="relative bg-gradient-to-br from-medical-950 via-medical-800 to-teal-700 text-white pt-16 pb-7 px-6 rounded-b-[2rem] shadow-lg overflow-hidden">
-      <!-- Decorative background circles -->
       <div class="absolute -top-12 -right-12 w-44 h-44 bg-teal-400/15 rounded-full blur-2xl pointer-events-none"></div>
       <div class="absolute -bottom-10 -left-10 w-36 h-36 bg-sky-400/15 rounded-full blur-xl pointer-events-none"></div>
 
       <div class="relative z-10 flex flex-col items-center text-center">
-        <!-- Doctor Portrait -->
-        <div class="relative mb-4">
+        <!-- Doctor Portrait with Custom Photo Upload -->
+        <div class="relative group mb-4">
           <div class="w-28 h-28 rounded-full p-1 bg-gradient-to-tr from-teal-300 via-white to-sky-300 shadow-xl">
             <img id="display-avatar" 
                  src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80" 
@@ -117,10 +106,17 @@
                  class="w-full h-full object-cover rounded-full bg-medical-900" />
           </div>
           
-          <!-- Verified Medical Shield Badge -->
+          <!-- Verified Badge -->
           <div title="Verified Consultant Surgeon" class="absolute bottom-1 right-1 bg-sky-500 text-white w-7 h-7 rounded-full flex items-center justify-center border-2 border-white shadow-md">
             <i class="fa-solid fa-check text-xs"></i>
           </div>
+
+          <!-- Photo Upload Overlay (Visible in Edit Mode or on Hover) -->
+          <label for="avatar-upload" id="avatar-upload-label" class="hidden cursor-pointer absolute inset-0 bg-slate-900/70 rounded-full flex flex-col items-center justify-center text-white text-xs font-semibold transition">
+            <i class="fa-solid fa-camera text-base mb-1"></i>
+            <span>Upload Photo</span>
+          </label>
+          <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)" />
         </div>
 
         <!-- Clinic Pill -->
@@ -136,7 +132,7 @@
 
         <!-- Degrees & Credentials -->
         <p id="display-credentials" class="text-xs sm:text-sm font-medium text-teal-100/95 mt-1 max-w-xs leading-relaxed">
-          MBBS, MS, DNB, FCPS (Gold Medal), FMAS, MNAMS, FICS(USA), FIAGES, PGDMLS, PGDHHM, Diploma MAS (Hernia), Fellowship Coloretal Surgery
+          MBBS, MS, DNB, FCPS (Gold Medal), FMAS, MNAMS, FICS(USA), FIAGES, PGDMLS, PGDHHM, Diploma MAS (Hernia), Fellowship Colorectal Surgery
         </p>
 
         <!-- Experience & Reg Badge -->
@@ -151,17 +147,16 @@
 
         <!-- Specialization Tags -->
         <div id="display-tags" class="flex flex-wrap justify-center gap-1.5 mt-4">
-          <span class="px-2.5 py-1 rounded-full bg-white text-medical-900 text-[11px] font-semibold shadow-sm">Consultant General,</span>
-          <span class="px-2.5 py-1 rounded-full bg-teal-500/30 border border-teal-300/30 text-white text-[11px] font-medium">Laparoscopic & Laser Surgeon,</span>
+          <span class="px-2.5 py-1 rounded-full bg-white text-medical-900 text-[11px] font-semibold shadow-sm">Consultant General</span>
+          <span class="px-2.5 py-1 rounded-full bg-teal-500/30 border border-teal-300/30 text-white text-[11px] font-medium">Laparoscopic & Laser Surgeon</span>
           <span class="px-2.5 py-1 rounded-full bg-teal-500/30 border border-teal-300/30 text-white text-[11px] font-medium">Specialist in Hernia & Robotic Surgery</span>
         </div>
       </div>
     </header>
 
-    <!-- QUICK ACTION BAR (4 One-Tap Actions) -->
+    <!-- QUICK ACTION BAR -->
     <section class="px-4 -mt-5 relative z-20">
       <div class="bg-white rounded-2xl shadow-lg shadow-slate-200/80 border border-slate-100 p-2.5 grid grid-cols-4 gap-1.5">
-        <!-- Call Clinic -->
         <a id="action-call" href="tel:+919137011319" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-medical-50 active:bg-medical-100 transition group">
           <div class="w-10 h-10 rounded-full bg-medical-50 text-medical-700 group-hover:bg-medical-600 group-hover:text-white flex items-center justify-center text-base transition shadow-sm">
             <i class="fa-solid fa-phone"></i>
@@ -169,24 +164,21 @@
           <span class="text-[11px] font-semibold text-slate-700 mt-1.5">Call</span>
         </a>
 
-        <!-- WhatsApp -->
-        <button onclick="openQuickWhatsApp()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-emerald-50 active:bg-emerald-100 transition group">
+        <button type="button" onclick="openQuickWhatsApp()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-emerald-50 active:bg-emerald-100 transition group">
           <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white flex items-center justify-center text-lg transition shadow-sm">
             <i class="fa-brands fa-whatsapp"></i>
           </div>
           <span class="text-[11px] font-semibold text-slate-700 mt-1.5">WhatsApp</span>
         </button>
 
-        <!-- Save vCard -->
-        <button onclick="downloadVCard()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-sky-50 active:bg-sky-100 transition group">
+        <button type="button" onclick="downloadVCard()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-sky-50 active:bg-sky-100 transition group">
           <div class="w-10 h-10 rounded-full bg-sky-50 text-sky-600 group-hover:bg-sky-600 group-hover:text-white flex items-center justify-center text-base transition shadow-sm">
             <i class="fa-solid fa-address-book"></i>
           </div>
           <span class="text-[11px] font-semibold text-slate-700 mt-1.5">Save Contact</span>
         </button>
 
-        <!-- Share Profile -->
-        <button onclick="shareProfile()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-indigo-50 active:bg-indigo-100 transition group">
+        <button type="button" onclick="shareProfile()" class="flex flex-col items-center justify-center py-2 px-1 rounded-xl hover:bg-indigo-50 active:bg-indigo-100 transition group">
           <div class="w-10 h-10 rounded-full bg-indigo-50 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white flex items-center justify-center text-base transition shadow-sm">
             <i class="fa-solid fa-share-nodes"></i>
           </div>
@@ -197,25 +189,130 @@
 
     <!-- Primary CTA Button: Book Appointment -->
     <div class="px-4 mt-3.5">
-      <button onclick="openBookingModal()" class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-medical-700 to-teal-600 hover:from-medical-800 hover:to-teal-700 text-white font-display font-bold text-sm shadow-md shadow-medical-700/20 flex items-center justify-center gap-2.5 transition active:scale-[0.99]">
+      <button type="button" onclick="openBookingModal()" class="w-full py-3.5 px-5 rounded-2xl bg-gradient-to-r from-medical-700 to-teal-600 hover:from-medical-800 hover:to-teal-700 text-white font-display font-bold text-sm shadow-md shadow-medical-700/20 flex items-center justify-center gap-2.5 transition active:scale-[0.99]">
         <i class="fa-regular fa-calendar-check text-base"></i>
         <span>Book Clinic Consultation</span>
         <i class="fa-solid fa-arrow-right text-xs opacity-80"></i>
       </button>
     </div>
 
+    <!-- EDIT PROFILE & PHOTO UPLOAD DRAWER (Hidden until sliders icon or ?edit=1 is used) -->
+    <section id="edit-panel" class="hidden px-4 mt-4 animate-fade-up">
+      <div class="bg-amber-50/95 border-2 border-amber-300 rounded-2xl p-4 shadow-inner">
+        <div class="flex items-center justify-between mb-3 pb-2 border-b border-amber-200">
+          <div class="flex items-center gap-2">
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse"></span>
+            <h2 class="font-display font-bold text-sm text-amber-950">Customize Profile & Photos</h2>
+          </div>
+          <button type="button" onclick="resetToDefaults()" class="text-[11px] font-semibold text-amber-800 hover:underline">
+            Reset Default
+          </button>
+        </div>
+
+        <!-- Quick Portrait Upload Button inside Edit Panel -->
+        <div class="mb-3 p-2.5 bg-white rounded-xl border border-amber-200 flex items-center justify-between">
+          <span class="text-xs font-semibold text-slate-700">Doctor Profile Photo</span>
+          <label for="avatar-upload" class="cursor-pointer bg-medical-700 hover:bg-medical-800 text-white px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-camera"></i>
+            <span>Choose Photo</span>
+          </label>
+        </div>
+
+        <form id="profile-edit-form" class="space-y-3 text-xs" onsubmit="saveProfileChanges(event)">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Surgeon Full Name</label>
+              <input type="text" id="input-name" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" required />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Clinic / Hospital Name</label>
+              <input type="text" id="input-clinic" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" required />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Degrees & Fellowships</label>
+            <input type="text" id="input-credentials" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" required />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Experience Label</label>
+              <input type="text" id="input-experience" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Medical Reg. No.</label>
+              <input type="text" id="input-reg" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Specialization Tags (comma-separated)</label>
+            <input type="text" id="input-tags" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Clinic Phone (with +91)</label>
+              <input type="tel" id="input-phone" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" required />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">WhatsApp No. (digits only)</label>
+              <input type="text" id="input-whatsapp" placeholder="919137011319" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" required />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">About / Clinical Philosophy</label>
+            <textarea id="input-bio" rows="3" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600"></textarea>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Clinic Address</label>
+            <input type="text" id="input-address" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+          </div>
+
+          <div class="grid grid-cols-2 gap-2.5">
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Morning OPD Slot</label>
+              <input type="text" id="input-morning-slot" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-700 mb-1">Evening OPD Slot</label>
+              <input type="text" id="input-evening-slot" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+            </div>
+          </div>
+
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Google Maps Link</label>
+            <input type="url" id="input-map-url" class="w-full px-3 py-2 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600" />
+          </div>
+
+          <div class="pt-2 flex flex-col sm:flex-row gap-2">
+            <button type="submit" class="flex-1 bg-medical-700 hover:bg-medical-800 text-white font-bold py-2.5 px-4 rounded-xl shadow transition">
+              <i class="fa-solid fa-check mr-1"></i> Save & Apply
+            </button>
+            <button type="button" onclick="exportStandaloneHTML()" class="bg-slate-800 hover:bg-slate-900 text-white font-semibold py-2.5 px-3 rounded-xl shadow transition flex items-center justify-center gap-1.5" title="Download index.html with your uploaded photos and changes baked in">
+              <i class="fa-solid fa-download"></i>
+              <span>Download index.html</span>
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
     <!-- NAVIGATION TABS -->
     <nav class="px-4 mt-5 border-b border-slate-200 sticky top-0 bg-white/95 backdrop-blur-md z-10">
       <div class="grid grid-cols-3 gap-1" role="tablist">
-        <button onclick="switchTab('expertise')" id="tab-expertise" class="tab-btn py-3 text-xs font-bold border-b-2 border-medical-600 text-medical-700 transition flex items-center justify-center gap-1.5">
+        <button type="button" onclick="switchTab('expertise')" id="tab-expertise" class="tab-btn py-3 text-xs font-bold border-b-2 border-medical-600 text-medical-700 transition flex items-center justify-center gap-1.5">
           <i class="fa-solid fa-stethoscope"></i>
           <span>Expertise</span>
         </button>
-        <button onclick="switchTab('timings')" id="tab-timings" class="tab-btn py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5">
+        <button type="button" onclick="switchTab('timings')" id="tab-timings" class="tab-btn py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5">
           <i class="fa-regular fa-clock"></i>
           <span>OPD & Map</span>
         </button>
-        <button onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5">
+        <button type="button" onclick="switchTab('gallery')" id="tab-gallery" class="tab-btn py-3 text-xs font-semibold border-b-2 border-transparent text-slate-500 hover:text-slate-800 transition flex items-center justify-center gap-1.5">
           <i class="fa-regular fa-images"></i>
           <span>Facility</span>
         </button>
@@ -227,7 +324,6 @@
 
       <!-- TAB 1: ABOUT & EXPERTISE -->
       <div id="panel-expertise" class="tab-panel space-y-5 animate-fade-up">
-        <!-- Clinical Bio Card -->
         <div class="bg-slate-50 rounded-2xl p-4 border border-slate-200/70">
           <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-2 mb-2">
             <span class="w-6 h-6 rounded-lg bg-medical-100 text-medical-700 flex items-center justify-center text-xs">
@@ -240,7 +336,6 @@
           </p>
         </div>
 
-        <!-- Expandable Surgical Procedures -->
         <div>
           <div class="flex items-center justify-between mb-2.5 px-1">
             <h3 class="font-display font-bold text-sm text-slate-900">Surgical Specializations</h3>
@@ -248,9 +343,8 @@
           </div>
 
           <div id="procedures-list" class="space-y-2.5">
-            <!-- Procedure 1 -->
             <div class="procedure-card bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden transition">
-              <button onclick="toggleProcedure(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-3 hover:bg-slate-50/80 transition">
+              <button type="button" onclick="toggleProcedure(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-3 hover:bg-slate-50/80 transition">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 flex items-center justify-center shrink-0">
                     <i class="fa-solid fa-shield-virus"></i>
@@ -267,9 +361,8 @@
               </div>
             </div>
 
-            <!-- Procedure 2 -->
             <div class="procedure-card bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden transition">
-              <button onclick="toggleProcedure(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-3 hover:bg-slate-50/80 transition">
+              <button type="button" onclick="toggleProcedure(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-3 hover:bg-slate-50/80 transition">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-sky-50 text-sky-700 flex items-center justify-center shrink-0">
                     <i class="fa-solid fa-notes-medical"></i>
@@ -286,9 +379,8 @@
               </div>
             </div>
 
-            <!-- Procedure 3 -->
             <div class="procedure-card bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden transition">
-              <button onclick="toggleProcedure(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-3 hover:bg-slate-50/80 transition">
+              <button type="button" onclick="toggleProcedure(this)" class="w-full p-3.5 text-left flex items-center justify-between gap-3 hover:bg-slate-50/80 transition">
                 <div class="flex items-center gap-3">
                   <div class="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-700 flex items-center justify-center shrink-0">
                     <i class="fa-solid fa-microscope"></i>
@@ -310,7 +402,6 @@
 
       <!-- TAB 2: CLINIC TIMINGS & LOCATIONS -->
       <div id="panel-timings" class="tab-panel hidden space-y-4 animate-fade-up">
-        <!-- Live Clinic Status Banner -->
         <div id="clinic-status-card" class="rounded-2xl p-3.5 border flex items-center justify-between bg-emerald-50/80 border-emerald-200">
           <div class="flex items-center gap-3">
             <span class="relative flex h-3 w-3">
@@ -327,7 +418,6 @@
           </span>
         </div>
 
-        <!-- Consultation Schedule Card -->
         <div class="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm space-y-3">
           <h3 class="font-display font-bold text-sm text-slate-900 flex items-center gap-2">
             <i class="fa-regular fa-calendar text-medical-600"></i>
@@ -343,19 +433,603 @@
               <span class="text-slate-500 flex items-center gap-1.5">
                 <i class="fa-regular fa-sun text-amber-500"></i> Morning Session
               </span>
-              <span id="display-morning-slot" class="font-bold text-slate-800">12:00 PM – 02:00 PM</span>
+              <span id="display-morning-slot" class="font-bold text-slate-800">10:30 AM – 01:30 PM</span>
             </div>
             <div class="py-2.5 flex items-center justify-between">
               <span class="text-slate-500 flex items-center gap-1.5">
                 <i class="fa-regular fa-moon text-indigo-500"></i> Evening Session
               </span>
-              <span id="display-evening-slot" class="font-bold text-slate-800">07:30 PM – 10:00 PM</span>
+              <span id="display-evening-slot" class="font-bold text-slate-800">07:00 PM – 10:30 PM</span>
             </div>
             <div class="py-2.5 flex items-center justify-between">
               <span class="text-slate-500">Sunday</span>
               <span class="font-medium text-rose-600">Emergency / By Prior Appt.</span>
             </div>
           </div>
-
         </div>
 
+        <div class="bg-slate-50 rounded-2xl border border-slate-200 p-4 space-y-3">
+          <div class="flex items-start gap-3">
+            <div class="w-9 h-9 rounded-xl bg-medical-100 text-medical-700 flex items-center justify-center shrink-0 mt-0.5">
+              <i class="fa-solid fa-location-dot"></i>
+            </div>
+            <div>
+              <h4 id="display-location-clinic" class="font-display font-bold text-sm text-slate-900">Madhur Laparoscopy Clinic</h4>
+              <p id="display-address" class="text-xs text-slate-600 mt-1 leading-relaxed">
+                Shop No. 5, Geeta Sadan, N. S. Road, Mulund (West), Mumbai - 400080
+              </p>
+            </div>
+          </div>
+
+          <a id="display-map-link" href="https://maps.app.goo.gl/hGMBvzbpW9Cj66148" target="_blank" rel="noopener noreferrer" class="w-full py-2.5 px-4 rounded-xl bg-white hover:bg-medical-50 text-medical-800 font-semibold text-xs border border-slate-200 shadow-sm flex items-center justify-center gap-2 transition">
+            <i class="fa-solid fa-diamond-turn-right text-medical-600"></i>
+            <span>Get Directions on Google Maps</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- TAB 3: GALLERY & FACILITY (Supports Custom Photo Uploads) -->
+      <div id="panel-gallery" class="tab-panel hidden space-y-3.5 animate-fade-up">
+        <div class="flex items-center justify-between px-1">
+          <div>
+            <h3 class="font-display font-bold text-sm text-slate-900">Clinic & Surgical Facility</h3>
+            <p class="text-[11px] text-slate-500">Tap any photo to enlarge</p>
+          </div>
+          <label for="gallery-add-input" class="cursor-pointer bg-medical-50 hover:bg-medical-100 text-medical-700 border border-medical-200 px-3 py-1.5 rounded-xl text-[11px] font-bold flex items-center gap-1.5 transition">
+            <i class="fa-solid fa-camera"></i>
+            <span>Upload Photo</span>
+          </label>
+          <input type="file" id="gallery-add-input" accept="image/*" class="hidden" onchange="handleAddGalleryImage(event)" />
+        </div>
+
+        <div id="gallery-grid" class="grid grid-cols-2 gap-2.5">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+    </div>
+
+    <!-- CARD FOOTER -->
+    <footer class="px-6 py-4 bg-slate-50 border-t border-slate-200/80 text-center mt-auto">
+      <p class="text-[11px] text-slate-500 font-medium">
+        Digital Medical Card • <span id="footer-clinic-name" class="text-slate-700 font-semibold">Madhur Laparoscopy Clinic</span>
+      </p>
+      <p class="text-[10px] text-slate-400 mt-0.5">
+        Scan QR or save vCard for instant emergency & OPD access
+      </p>
+    </footer>
+  </main>
+
+  <!-- MODAL 1: DYNAMIC QR CODE -->
+  <div id="qr-modal" class="fixed inset-0 z-50 hidden bg-slate-950/65 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl shadow-2xl overflow-hidden animate-fade-up border border-slate-200">
+      <div class="bg-gradient-to-r from-medical-900 to-teal-700 px-5 py-4 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-qrcode text-teal-300"></i>
+          <h3 class="font-display font-bold text-sm">Clinic Smart QR Standee</h3>
+        </div>
+        <button type="button" onclick="closeModal('qr-modal')" class="w-7 h-7 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white text-xs transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="p-6 text-center space-y-4">
+        <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-semibold">
+          <button type="button" id="qr-mode-vcard" onclick="setQRMode('vcard')" class="px-3 py-1.5 rounded-lg bg-white text-medical-800 shadow-sm transition">
+            Direct Contact (vCard)
+          </button>
+          <button type="button" id="qr-mode-url" onclick="setQRMode('url')" class="px-3 py-1.5 rounded-lg text-slate-500 hover:text-slate-800 transition">
+            Web Profile Link
+          </button>
+        </div>
+
+        <div id="qr-printable-card" class="bg-gradient-to-b from-medical-50/70 to-white border-2 border-medical-200 rounded-2xl p-5 shadow-inner">
+          <p id="qr-clinic-title" class="font-display font-extrabold text-xs uppercase tracking-wider text-medical-800 mb-1">
+            Madhur Laparoscopy Clinic
+          </p>
+          <p id="qr-doctor-title" class="font-bold text-sm text-slate-900 mb-3">
+            Dr. Shrirang Yadwadkar
+          </p>
+
+          <div class="bg-white p-3 rounded-2xl shadow-sm border border-slate-100 inline-block">
+            <div id="qrcode-container" class="w-44 h-44 flex items-center justify-center"></div>
+          </div>
+
+          <p id="qr-caption" class="text-[11px] text-slate-500 mt-3 font-medium">
+            Scan with phone camera to save Doctor's Contact
+          </p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2.5 pt-1">
+          <button type="button" onclick="downloadQRImage()" class="col-span-2 py-3 px-4 rounded-xl bg-medical-700 hover:bg-medical-800 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition active:scale-[0.99]">
+            <i class="fa-solid fa-download"></i>
+            <span>Download Printable QR Card</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL 2: BOOK CONSULTATION -->
+  <div id="booking-modal" class="fixed inset-0 z-50 hidden bg-slate-950/65 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full max-w-md rounded-t-3xl sm:rounded-3xl shadow-2xl overflow-hidden animate-fade-up border border-slate-200">
+      <div class="bg-medical-900 px-5 py-4 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-display font-bold text-sm">Book OPD Appointment</h3>
+          <p id="booking-clinic-subtitle" class="text-[11px] text-teal-200">Madhur Laparoscopy Clinic</p>
+        </div>
+        <button type="button" onclick="closeModal('booking-modal')" class="w-8 h-8 rounded-full bg-white/15 hover:bg-white/25 flex items-center justify-center text-white text-xs transition">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <form onsubmit="submitAppointment(event)" class="p-5 space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Patient Full Name *</label>
+          <input type="text" id="book-patient-name" placeholder="e.g. Rajesh Kulkarni" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-medical-600" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Mobile Number *</label>
+            <input type="tel" id="book-patient-phone" placeholder="10-digit number" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-medical-600" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">Preferred Date *</label>
+            <input type="date" id="book-date" required class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:border-medical-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Preferred OPD Slot</label>
+          <select id="book-slot" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600">
+            <option value="Morning OPD (10:30 AM - 01:30 PM)">Morning OPD (10:30 AM – 01:30 PM)</option>
+            <option value="Evening OPD (06:00 PM - 09:00 PM)">Evening OPD (06:00 PM – 09:00 PM)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">Consultation / Surgical Concern</label>
+          <select id="book-concern" class="w-full px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:border-medical-600">
+            <option value="Hernia Evaluation / Laparoscopic Repair">Hernia Evaluation / Laparoscopic Repair</option>
+            <option value="Colorectal / Piles / Fissure / Fistula">Colorectal / Piles / Fissure / Fistula</option>
+            <option value="Gallbladder Stones / Abdominal Pain">Gallbladder Stones / Abdominal Pain</option>
+            <option value="Post-Operative Follow-up">Post-Operative Follow-up</option>
+            <option value="General Surgical Consultation">General Surgical Consultation</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button type="submit" class="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md flex items-center justify-center gap-2 transition">
+            <i class="fa-brands fa-whatsapp text-base"></i>
+            <span>Confirm & Send via WhatsApp</span>
+          </button>
+          <button type="button" onclick="confirmInstantOnly()" class="w-full py-2.5 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs transition">
+            Log Request on Screen Only
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL 3: GALLERY LIGHTBOX PREVIEW -->
+  <div id="lightbox-modal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeModal('lightbox-modal')">
+    <div class="relative max-w-lg w-full bg-slate-900 rounded-3xl overflow-hidden shadow-2xl border border-slate-700" onclick="event.stopPropagation()">
+      <button type="button" onclick="closeModal('lightbox-modal')" class="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-black/60 text-white flex items-center justify-center hover:bg-black transition">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <img id="lightbox-img" src="" alt="Clinic Preview" class="w-full max-h-[70vh] object-contain bg-black" />
+      <div class="p-4 flex items-center justify-between bg-slate-900 text-white">
+        <p id="lightbox-caption" class="text-xs font-semibold text-slate-200">Facility Image</p>
+        <button type="button" id="lightbox-delete-btn" onclick="deleteCurrentGalleryImage()" class="text-xs text-rose-400 hover:text-rose-300 font-semibold flex items-center gap-1">
+          <i class="fa-regular fa-trash-can"></i> Remove
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT -->
+  <script>
+    const DEFAULT_PROFILE = {
+      name: "Dr. Shrirang Yadwadkar",
+      credentials: "Consultant Surgeon • Diploma MAS (Hernia), Fellowship Colorectal Surgery",
+      clinicName: "Madhur Laparoscopy Clinic",
+      experience: "15+ Yrs Surgical Exp.",
+      reg: "MMC Verified Consultant",
+      tags: ["Laparoscopic Surgery", "Hernia Specialist", "Colorectal Surgery"],
+      phone: "+919822000000",
+      whatsapp: "919822000000",
+      bio: "Dr. Shrirang Yadwadkar is a dedicated Consultant Laparoscopic & Colorectal Surgeon specializing in advanced minimally invasive (keyhole) surgeries. With a Diploma in Minimal Access Surgery (Hernia) and Fellowship in Colorectal Surgery, he focuses on painless recovery, precision techniques, and compassionate patient-centric care at Madhur Laparoscopy Clinic.",
+      address: "2nd Floor, Medical Chambers, Near City Hospital Square, Maharashtra, India",
+      morningSlot: "10:30 AM – 01:30 PM",
+      eveningSlot: "06:00 PM – 09:00 PM",
+      mapUrl: "https://maps.google.com/?q=Madhur+Laparoscopy+Clinic",
+      avatar: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=400&q=80",
+      gallery: [
+        {
+          url: "https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=600&q=80",
+          caption: "Madhur Laparoscopy Clinic Reception & Consultation Lounge"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1579684385127-1ef15d508118?auto=format&fit=crop&w=600&q=80",
+          caption: "Advanced HD Laparoscopic & Minimally Invasive OT Suite"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=600&q=80",
+          caption: "Precision Surgical Instrumentation & Sterilization Unit"
+        },
+        {
+          url: "https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=600&q=80",
+          caption: "Patient Recovery & Post-Operative Care Wing"
+        }
+      ]
+    };
+
+    const STORAGE_KEY = "surgeon_digital_profile_v2";
+    let profileData = loadProfileData();
+    let isEditMode = false;
+    let currentQRMode = "vcard";
+    let activeLightboxIndex = null;
+
+    function loadProfileData() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          return { ...DEFAULT_PROFILE, ...JSON.parse(saved) };
+        }
+      } catch (e) {
+        console.warn("Storage unavailable, using defaults.");
+      }
+      return JSON.parse(JSON.stringify(DEFAULT_PROFILE));
+    }
+
+    function persistProfileData() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(profileData));
+      } catch (e) {
+        showToast("Photo active! Click 'Download index.html' in edit menu to save permanently.", "amber");
+      }
+    }
+
+    // Safe DOM setter helper so missing elements never break tabs
+    function setText(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.textContent = value;
+    }
+
+    function setValue(id, value) {
+      const el = document.getElementById(id);
+      if (el) el.value = value;
+    }
+
+    window.addEventListener("DOMContentLoaded", () => {
+      renderProfile();
+      updateLiveClinicStatus();
+      const dateInput = document.getElementById("book-date");
+      if (dateInput) dateInput.valueAsDate = new Date();
+
+      // Auto-open edit panel if URL contains ?edit=1
+      if (window.location.search.includes("edit=1")) {
+        toggleEditMode();
+      }
+    });
+
+    function renderProfile() {
+      document.title = `${profileData.name} | ${profileData.clinicName}`;
+      setText("display-name", profileData.name);
+      setText("display-credentials", profileData.credentials);
+      setText("display-clinic-name", profileData.clinicName);
+      setText("display-location-clinic", profileData.clinicName);
+      setText("footer-clinic-name", profileData.clinicName);
+      setText("booking-clinic-subtitle", profileData.clinicName);
+      setText("display-experience", profileData.experience);
+      setText("display-reg", profileData.reg);
+      setText("display-bio", profileData.bio);
+      setText("display-address", profileData.address);
+      setText("display-morning-slot", profileData.morningSlot);
+      setText("display-evening-slot", profileData.eveningSlot);
+
+      const mapLink = document.getElementById("display-map-link");
+      if (mapLink) mapLink.href = profileData.mapUrl;
+
+      const callLink = document.getElementById("action-call");
+      if (callLink) callLink.href = `tel:${profileData.phone}`;
+
+      const avatarImg = document.getElementById("display-avatar");
+      if (avatarImg) avatarImg.src = profileData.avatar;
+
+      const tagsContainer = document.getElementById("display-tags");
+      if (tagsContainer) {
+        tagsContainer.innerHTML = "";
+        profileData.tags.forEach((tag, idx) => {
+          const span = document.createElement("span");
+          span.className = idx === 0
+            ? "px-2.5 py-1 rounded-full bg-white text-medical-900 text-[11px] font-semibold shadow-sm"
+            : "px-2.5 py-1 rounded-full bg-teal-500/30 border border-teal-300/30 text-white text-[11px] font-medium";
+          span.textContent = tag.trim();
+          tagsContainer.appendChild(span);
+        });
+      }
+
+      setValue("input-name", profileData.name);
+      setValue("input-clinic", profileData.clinicName);
+      setValue("input-credentials", profileData.credentials);
+      setValue("input-experience", profileData.experience);
+      setValue("input-reg", profileData.reg);
+      setValue("input-tags", profileData.tags.join(", "));
+      setValue("input-phone", profileData.phone);
+      setValue("input-whatsapp", profileData.whatsapp);
+      setValue("input-bio", profileData.bio);
+      setValue("input-address", profileData.address);
+      setValue("input-morning-slot", profileData.morningSlot);
+      setValue("input-evening-slot", profileData.eveningSlot);
+      setValue("input-map-url", profileData.mapUrl);
+
+      renderGallery();
+    }
+
+    function renderGallery() {
+      const grid = document.getElementById("gallery-grid");
+      if (!grid) return;
+      grid.innerHTML = "";
+
+      profileData.gallery.forEach((item, index) => {
+        const card = document.createElement("div");
+        card.className = "group relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 border border-slate-200 shadow-sm cursor-pointer";
+        card.onclick = () => openLightbox(index);
+
+        card.innerHTML = `
+          <img src="${item.url}" 
+               onerror="this.src='https://placehold.co/400x300/0f766e/ffffff?text=Clinic+Facility'"
+               alt="${item.caption}" 
+               class="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950/75 via-transparent to-transparent flex items-end p-2.5">
+            <p class="text-[10px] font-medium text-white line-clamp-2 leading-snug">${item.caption}</p>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Tab Switching Logic
+    function switchTab(tabName) {
+      document.querySelectorAll(".tab-panel").forEach(p => p.classList.add("hidden"));
+      document.querySelectorAll(".tab-btn").forEach(btn => {
+        btn.classList.remove("border-medical-600", "text-medical-700", "font-bold");
+        btn.classList.add("border-transparent", "text-slate-500", "font-semibold");
+      });
+
+      const targetPanel = document.getElementById(`panel-${tabName}`);
+      const activeBtn = document.getElementById(`tab-${tabName}`);
+      if (targetPanel) targetPanel.classList.remove("hidden");
+      if (activeBtn) {
+        activeBtn.classList.remove("border-transparent", "text-slate-500", "font-semibold");
+        activeBtn.classList.add("border-medical-600", "text-medical-700", "font-bold");
+      }
+    }
+
+    function toggleProcedure(buttonEl) {
+      const card = buttonEl.closest(".procedure-card");
+      const body = card.querySelector(".procedure-body");
+      const icon = buttonEl.querySelector(".fa-chevron-down");
+      const isHidden = body.classList.contains("hidden");
+
+      body.classList.toggle("hidden", !isHidden);
+      if (icon) icon.style.transform = isHidden ? "rotate(180deg)" : "rotate(0deg)";
+    }
+
+    function updateLiveClinicStatus() {
+      const now = new Date();
+      const day = now.getDay();
+      const hour = now.getHours() + now.getMinutes() / 60;
+      const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+      setText("current-day-badge", days[day]);
+
+      const card = document.getElementById("clinic-status-card");
+      const dot = document.getElementById("status-dot");
+      const ping = document.getElementById("status-ping");
+      const headline = document.getElementById("status-headline");
+      const subtext = document.getElementById("status-subtext");
+      if (!card) return;
+
+      const isMorningOpen = day !== 0 && hour >= 10.5 && hour <= 13.5;
+      const isEveningOpen = day !== 0 && hour >= 18.0 && hour <= 21.0;
+
+      if (isMorningOpen || isEveningOpen) {
+        card.className = "rounded-2xl p-3.5 border flex items-center justify-between bg-emerald-50/90 border-emerald-200";
+        dot.className = "relative inline-flex rounded-full h-3 w-3 bg-emerald-500";
+        ping.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+        headline.className = "font-display font-bold text-xs text-emerald-950";
+        headline.textContent = "Clinic Open Now • OPD Active";
+        subtext.className = "text-[11px] text-emerald-700";
+        subtext.textContent = isMorningOpen ? "Morning session until 01:30 PM" : "Evening session until 09:00 PM";
+      } else {
+        card.className = "rounded-2xl p-3.5 border flex items-center justify-between bg-sky-50/90 border-sky-200";
+        dot.className = "relative inline-flex rounded-full h-3 w-3 bg-sky-500";
+        ping.className = "hidden";
+        headline.className = "font-display font-bold text-xs text-sky-950";
+        headline.textContent = day === 0 ? "Sunday • By Prior Appointment" : "OPD Currently Closed";
+        subtext.className = "text-[11px] text-sky-700";
+        if (day !== 0 && hour < 10.5) {
+          subtext.textContent = `Next slot: Today at ${profileData.morningSlot.split("–")[0].trim()}`;
+        } else if (day !== 0 && hour < 18.0) {
+          subtext.textContent = `Next slot: Today at ${profileData.eveningSlot.split("–")[0].trim()}`;
+        } else {
+          subtext.textContent = `Next regular OPD: ${profileData.morningSlot.split("–")[0].trim()}`;
+        }
+      }
+    }
+
+    function toggleEditMode() {
+      isEditMode = !isEditMode;
+      const panel = document.getElementById("edit-panel");
+      const label = document.getElementById("edit-btn-label");
+      const avatarOverlay = document.getElementById("avatar-upload-label");
+
+      if (isEditMode) {
+        panel.classList.remove("hidden");
+        avatarOverlay.classList.remove("hidden");
+        label.classList.remove("hidden");
+        showToast("Edit Mode active: Tap doctor photo or use form below.", "teal");
+      } else {
+        panel.classList.add("hidden");
+        avatarOverlay.classList.add("hidden");
+        label.classList.add("hidden");
+      }
+    }
+
+    function saveProfileChanges(e) {
+      e.preventDefault();
+      profileData.name = document.getElementById("input-name").value.trim();
+      profileData.clinicName = document.getElementById("input-clinic").value.trim();
+      profileData.credentials = document.getElementById("input-credentials").value.trim();
+      profileData.experience = document.getElementById("input-experience").value.trim();
+      profileData.reg = document.getElementById("input-reg").value.trim();
+      profileData.tags = document.getElementById("input-tags").value.split(",").map(t => t.trim()).filter(Boolean);
+      profileData.phone = document.getElementById("input-phone").value.trim();
+      profileData.whatsapp = document.getElementById("input-whatsapp").value.replace(/\D/g, "");
+      profileData.bio = document.getElementById("input-bio").value.trim();
+      profileData.address = document.getElementById("input-address").value.trim();
+      profileData.morningSlot = document.getElementById("input-morning-slot").value.trim();
+      profileData.eveningSlot = document.getElementById("input-evening-slot").value.trim();
+      profileData.mapUrl = document.getElementById("input-map-url").value.trim();
+
+      persistProfileData();
+      renderProfile();
+      toggleEditMode();
+      showToast("Profile saved! Click 'Download index.html' to publish updates.", "emerald");
+    }
+
+    function resetToDefaults() {
+      localStorage.removeItem(STORAGE_KEY);
+      profileData = JSON.parse(JSON.stringify(DEFAULT_PROFILE));
+      renderProfile();
+      showToast("Restored default profile.", "teal");
+    }
+
+    // Automatically compress uploaded photos so they save cleanly in localStorage & exported HTML
+    function compressImage(file, maxDimension, callback) {
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          let width = img.width;
+          let height = img.height;
+
+          if (width > maxDimension || height > maxDimension) {
+            if (width > height) {
+              height = Math.round((height * maxDimension) / width);
+              width = maxDimension;
+            } else {
+              width = Math.round((width * maxDimension) / height);
+              height = maxDimension;
+            }
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, width, height);
+          callback(canvas.toDataURL("image/jpeg", 0.82));
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      compressImage(file, 500, (compressedDataUrl) => {
+        profileData.avatar = compressedDataUrl;
+        document.getElementById("display-avatar").src = compressedDataUrl;
+        persistProfileData();
+        showToast("Doctor portrait updated!", "emerald");
+      });
+    }
+
+    function handleAddGalleryImage(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      compressImage(file, 900, (compressedDataUrl) => {
+        const cleanName = file.name.replace(/\.[^/.]+$/, "").replace(/[-_]/g, " ");
+        profileData.gallery.unshift({
+          url: compressedDataUrl,
+          caption: cleanName ? `Facility: ${cleanName}` : "Clinic & Surgical Care Facility"
+        });
+        persistProfileData();
+        renderGallery();
+        showToast("Custom clinic photo added to gallery!", "emerald");
+      });
+    }
+
+    function openLightbox(index) {
+      activeLightboxIndex = index;
+      const item = profileData.gallery[index];
+      document.getElementById("lightbox-img").src = item.url;
+      document.getElementById("lightbox-caption").textContent = item.caption;
+      document.getElementById("lightbox-modal").classList.remove("hidden");
+    }
+
+    function deleteCurrentGalleryImage() {
+      if (activeLightboxIndex === null) return;
+      if (profileData.gallery.length <= 1) {
+        showToast("At least one facility photo must remain.", "amber");
+        return;
+      }
+      profileData.gallery.splice(activeLightboxIndex, 1);
+      persistProfileData();
+      renderGallery();
+      closeModal("lightbox-modal");
+      showToast("Photo removed from gallery.", "teal");
+    }
+
+    function buildVCardString() {
+      return [
+        "BEGIN:VCARD",
+        "VERSION:3.0",
+        `FN:${profileData.name}`,
+        `N:${profileData.name};;;;`,
+        `ORG:${profileData.clinicName}`,
+        `TITLE:${profileData.credentials}`,
+        `TEL;TYPE=WORK,VOICE:${profileData.phone}`,
+        `ADR;TYPE=WORK:;;${profileData.address};;;;`,
+        `URL:${window.location.href}`,
+        `NOTE:OPD Timings: ${profileData.morningSlot} & ${profileData.eveningSlot}`,
+        "END:VCARD"
+      ].join("\n");
+    }
+
+    function downloadVCard() {
+      const vcard = buildVCardString();
+      const blob = new Blob([vcard], { type: "text/vcard;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = profileData.name.toLowerCase().replace(/[^a-z0-9]+/g, "_") + ".vcf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Contact vCard (.vcf) downloaded!", "emerald");
+    }
+
+    function openQRModal() {
+      setText("qr-clinic-title", profileData.clinicName);
+      setText("qr-doctor-title", profileData.name);
+      document.getElementById("qr-modal").classList.remove("hidden");
+      renderQRCode();
+    }
+
+    function setQRMode(mode) {
+      currentQRMode = mode;
+      const vcardBtn = document.getElementById("qr-mode-vcard");
+      const urlBtn = document.getElementById("qr-mode-url");
+      const caption = document.getElementById("qr-caption");
+
+      if (mode === "vcard") {
+        vcardBtn.className
